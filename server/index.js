@@ -2,6 +2,11 @@ const express = require('express');
 
 const app = express();
 
+const api = require('./api/v1');
+
+app.use('/api', api);
+app.use('/api/v1', api);
+
 app.get('/', (req, res) => {
   res.json({
     message: 'FAVS API',
