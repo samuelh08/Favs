@@ -1,5 +1,8 @@
 exports.create = (req, res) => {
-  res.json({});
+  const { body = {} } = req;
+  res.json({
+    data: body,
+  });
 };
 
 exports.list = (req, res) => {
@@ -7,9 +10,17 @@ exports.list = (req, res) => {
 };
 
 exports.read = (req, res) => {
-  res.json({});
+  const { params = {} } = req;
+  const { id } = params;
+  res.json({
+    id,
+  });
 };
 
 exports.update = (req, res) => {
-  res.json({});
+  const { params = {} } = req;
+  const { id } = params;
+  res.json({
+    id,
+  });
 };

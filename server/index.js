@@ -1,8 +1,9 @@
 const express = require('express');
+const api = require('./api/v1');
 
 const app = express();
 
-const api = require('./api/v1');
+app.use(express.json());
 
 app.use('/api', api);
 app.use('/api/v1', api);
