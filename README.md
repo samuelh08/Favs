@@ -12,7 +12,7 @@ Provides a better way to organize your favorite things: music, clothes, courses,
 
 ## Development
 
-``npm run dev`
+`npm run dev`
 
 ## Test
 
