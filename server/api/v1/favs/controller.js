@@ -17,7 +17,7 @@ exports.read = (req, res) => {
   });
 };
 
-exports.update = (req, res) => {
+exports.delete = (req, res) => {
   const { params = {} } = req;
   const { id } = params;
   res.json({

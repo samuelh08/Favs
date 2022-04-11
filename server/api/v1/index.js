@@ -1,8 +1,8 @@
 const express = require('express');
 
 const router = express.Router();
-const lists = require('./lists/routes');
+const favs = require('./favs/routes');
 
-router.use('/lists', lists);
+router.use('/favs', favs);
 
 module.exports(router);
