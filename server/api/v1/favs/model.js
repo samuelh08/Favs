@@ -1,9 +1,25 @@
 const mongoose = require('mongoose');
 
+const { Schema } = mongoose;
+
 const fields = {
-  title: String,
-  description: String,
-  link: String,
+  title: {
+    type: String,
+    trim: true,
+    required: true,
+  },
+  description: {
+    type: String,
+    trim: true,
+  },
+  link: {
+    type: String,
+    required: true,
+  },
 };
 
-module.exports = mongoose.model('fav', fields);
+const fav = new Schema(fields, {
+  timestamps: true,
+});
+
+module.exports = mongoose.model('fav', fav);
