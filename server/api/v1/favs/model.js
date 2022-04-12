@@ -22,4 +22,7 @@ const fav = new Schema(fields, {
   timestamps: true,
 });
 
-module.exports = mongoose.model('fav', fav);
+module.exports = {
+  Model: mongoose.model('fav', fav),
+  fields,
+};

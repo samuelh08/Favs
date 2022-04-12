@@ -1,4 +1,6 @@
-const Model = require('./model');
+const { Model, fields } = require('./model');
+
+const { paginationParams, sortParams } = require('../../../utils');
 
 exports.id = async (req, res, next) => {
   const { params = {} } = req;
@@ -7,7 +9,7 @@ exports.id = async (req, res, next) => {
   try {
     const doc = await Model.findById(id);
     if (!doc) {
-      const message = 'Favs not found';
+      const message = `${Model.name} not found`;
       next({
         message,
         statusCode: 404,
@@ -36,10 +38,30 @@ exports.create = async (req, res, next) => {
 };
 
 exports.list = async (req, res, next) => {
+  const { query = {} } = req;
+  const { limit, skip, page } = paginationParams(query);
+  const { sortBy, direction } = sortParams(query, fields);
   try {
-    const docs = await Model.find({}).exec();
+    const data = await Promise.all([
+      Model.find({})
+        .skip(skip)
+        .limit(limit)
+        .sort({ [sortBy]: direction })
+        .exec(),
+      Model.countDocuments(),
+    ]);
+    const [docs, total] = data;
+    const pages = Math.ceil(total / limit);
     res.json({
       data: docs,
+      meta: {
+        pages,
+        page,
+        skip,
+        limit,
+        sortBy,
+        direction,
+      },
     });
   } catch (err) {
     next(err);
