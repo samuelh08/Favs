@@ -3,17 +3,9 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const fields = {
-  title: {
+  name: {
     type: String,
     trim: true,
-    required: true,
-  },
-  description: {
-    type: String,
-    trim: true,
-  },
-  link: {
-    type: String,
     required: true,
   },
 };
@@ -24,19 +16,28 @@ const references = {
     ref: 'user',
     required: true,
   },
-  listId: {
-    type: mongoose.ObjectId,
-    ref: 'list',
-    required: true,
+};
+
+const list = new Schema(Object.assign(fields, references), {
+  timestamps: true,
+  toJSON: {
+    virtuals: true,
+  },
+});
+
+const virtuals = {
+  favs: {
+    ref: 'fav',
+    localField: '_id',
+    foreignField: 'listId',
   },
 };
 
-const fav = new Schema(Object.assign(fields, references), {
-  timestamps: true,
-});
+list.virtual('favs', virtuals.favs);
 
 module.exports = {
-  Model: mongoose.model('fav', fav),
+  Model: mongoose.model('list', list),
   fields,
   references,
+  virtuals,
 };
