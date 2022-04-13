@@ -7,9 +7,10 @@ const referenceNames = Object.getOwnPropertyNames(references);
 exports.id = async (req, res, next) => {
   const { params = {} } = req;
   const { id } = params;
+  const populate = referenceNames.join(' ');
 
   try {
-    const doc = await Model.findById(id);
+    const doc = await Model.findById(id).populate(populate);
     if (!doc) {
       const message = `${Model.name} not found`;
       next({
@@ -43,13 +44,14 @@ exports.list = async (req, res, next) => {
   const { query = {} } = req;
   const { limit, skip, page } = paginationParams(query);
   const { sortBy, direction } = sortParams(query, fields);
+  const sort = { [sortBy]: direction };
   const populate = referenceNames.join(' ');
   try {
     const data = await Promise.all([
       Model.find({})
         .skip(skip)
         .limit(limit)
-        .sort({ [sortBy]: direction })
+        .sort(sort)
         .populate(populate)
         .exec(),
       Model.countDocuments(),

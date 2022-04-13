@@ -1,6 +1,6 @@
 const config = require('../config');
 
-const { pagination, sort } = config;
+const { pagination, sort, populate } = config;
 
 function paginationParams({
   limit = pagination.limit,
@@ -30,7 +30,27 @@ function sortParams(
   };
 }
 
+function populateToObject(populateNames, virtuals = {}) {
+  const virtualNames = Object.getOwnPropertyNames(virtuals);
+  return populateNames.map((item) => {
+    let options = {};
+    if (virtualNames.includes(item)) {
+      options = {
+        limit: populate.limit,
+        sort: {
+          [populate.virtuals.sort]: populate.virtuals.direction,
+        },
+      };
+    }
+    return {
+      path: item,
+      options,
+    };
+  });
+}
+
 module.exports = {
   paginationParams,
   sortParams,
+  populateToObject,
 };
