@@ -7,6 +7,10 @@ router.route('/').get(controller.list).post(controller.create);
 
 router.param('id', controller.id);
 
-router.route('/:id').get(controller.read).delete(controller.delete);
+router
+  .route('/:id')
+  .get(controller.read)
+  .put(controller.update)
+  .delete(controller.delete);
 
 module.exports(router);

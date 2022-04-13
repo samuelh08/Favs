@@ -1,8 +1,33 @@
 const { Model, fields, references } = require('./model');
+const { Model: List } = require('../lists/model');
 
-const { paginationParams, sortParams } = require('../../../utils');
+const {
+  paginationParams,
+  sortParams,
+  filterByNested,
+} = require('../../../utils');
 
 const referenceNames = Object.getOwnPropertyNames(references);
+
+exports.parentId = async (req, res, next) => {
+  const { params = {} } = req;
+  const { listId = null } = params;
+
+  if (listId) {
+    const doc = await List.findById(listId);
+    if (doc) {
+      next();
+    } else {
+      const message = 'List not found';
+      next({
+        message,
+        statusCode: 404,
+      });
+    }
+  } else {
+    next();
+  }
+};
 
 exports.id = async (req, res, next) => {
   const { params = {} } = req;
@@ -27,7 +52,8 @@ exports.id = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
-  const { body = {} } = req;
+  const { body = {}, params = {} } = req;
+  Object.assign(body, params);
   try {
     const model = new Model(body);
     const doc = await model.save();
@@ -41,20 +67,21 @@ exports.create = async (req, res, next) => {
 };
 
 exports.list = async (req, res, next) => {
-  const { query = {} } = req;
+  const { query = {}, params = {} } = req;
   const { limit, skip, page } = paginationParams(query);
   const { sortBy, direction } = sortParams(query, fields);
   const sort = { [sortBy]: direction };
-  const populate = referenceNames.join(' ');
+  const { filters, populate } = filterByNested(params, referenceNames);
+
   try {
     const data = await Promise.all([
-      Model.find({})
+      Model.find(filters)
         .skip(skip)
         .limit(limit)
         .sort(sort)
         .populate(populate)
         .exec(),
-      Model.countDocuments(),
+      Model.countDocuments(filters),
     ]);
     const [docs, total] = data;
     const pages = Math.ceil(total / limit);
@@ -82,8 +109,8 @@ exports.read = async (req, res) => {
 };
 
 exports.update = async (req, res, next) => {
-  const { doc = {}, body = {} } = req;
-  Object.assign(doc, body);
+  const { doc = {}, body = {}, params = {} } = req;
+  Object.assign(doc, body, params);
   try {
     const updated = await doc.save();
     res.json({

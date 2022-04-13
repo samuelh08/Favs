@@ -49,8 +49,20 @@ function populateToObject(populateNames, virtuals = {}) {
   });
 }
 
+function filterByNested(params = {}, referenceNames = []) {
+  const paramsNames = Object.getOwnPropertyNames(params);
+  const populateNames = referenceNames.filter(
+    (item) => !paramsNames.includes(item),
+  );
+  return {
+    filters: params,
+    populate: populateNames.join(' '),
+  };
+}
+
 module.exports = {
   paginationParams,
   sortParams,
   populateToObject,
+  filterByNested,
 };
