@@ -2,9 +2,11 @@ const express = require('express');
 const controller = require('./controller');
 const favRoutes = require('../favs/routes');
 
+const { auth } = require('../auth');
+
 const router = express.Router();
 
-router.route('/').get(controller.list).post(controller.create);
+router.route('/').get(controller.list).post(auth, controller.create);
 
 router.param('id', controller.id);
 

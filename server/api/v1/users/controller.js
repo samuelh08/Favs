@@ -1,6 +1,7 @@
 const { Model, fields } = require('./model');
 
 const { paginationParams, sortParams } = require('../../../utils');
+const { signToken } = require('../auth');
 
 exports.id = async (req, res, next) => {
   const { params = {} } = req;
@@ -55,8 +56,13 @@ exports.login = async (req, res, next) => {
         statusCode: 401,
       });
     }
+    const { _id: id } = user;
+    const token = signToken({ id });
     res.json({
       data: user,
+      meta: {
+        token,
+      },
     });
   } catch (err) {
     next(err);
