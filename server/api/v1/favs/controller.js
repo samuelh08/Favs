@@ -52,8 +52,9 @@ exports.id = async (req, res, next) => {
 };
 
 exports.create = async (req, res, next) => {
-  const { body = {}, params = {} } = req;
-  Object.assign(body, params);
+  const { body = {}, params = {}, decoded = {} } = req;
+  const { id } = decoded;
+  Object.assign(body, params, { userId: id });
   try {
     const model = new Model(body);
     const doc = await model.save();

@@ -2,7 +2,7 @@ const express = require('express');
 const controller = require('./controller');
 const favRoutes = require('../favs/routes');
 
-const { auth } = require('../auth');
+const { auth, owner } = require('../auth');
 
 const router = express.Router();
 
@@ -13,8 +13,8 @@ router.param('id', controller.id);
 router
   .route('/:id')
   .get(controller.read)
-  .put(controller.update)
-  .delete(controller.delete);
+  .put(auth, owner, controller.update)
+  .delete(auth, owner, controller.delete);
 
 router.use('/listId/favs', favRoutes);
 
