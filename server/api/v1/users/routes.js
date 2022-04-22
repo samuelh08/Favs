@@ -1,6 +1,6 @@
 const express = require('express');
 const controller = require('./controller');
-const { auth, me } = require('../auth');
+const { isAuthenticated, me } = require('../auth');
 
 const router = express.Router();
 
@@ -12,7 +12,7 @@ router.param('id', controller.id);
 router
   .route('/:id')
   .get(controller.read)
-  .put(auth, me, controller.update)
-  .delete(auth, me, controller.delete);
+  .put(isAuthenticated, me, controller.update)
+  .delete(isAuthenticated, me, controller.delete);
 
-module.exports(router);
+module.exports = router;

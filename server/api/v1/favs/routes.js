@@ -1,7 +1,7 @@
 const express = require('express');
 const controller = require('./controller');
 
-const { auth, owner } = require('../auth');
+const { isAuthenticated, owner } = require('../auth');
 
 const router = express.Router({
   mergeParams: true,
@@ -9,15 +9,15 @@ const router = express.Router({
 
 router
   .route('/')
-  .get(controller.parentId, controller.list)
-  .post(controller.parentId, auth, controller.create);
+  .get(controller.parentId, isAuthenticated, controller.list)
+  .post(controller.parentId, isAuthenticated, controller.create);
 
 router.param('id', controller.id);
 
 router
   .route('/:id')
-  .get(controller.parentId, controller.read)
-  .put(controller.parentId, auth, owner, controller.update)
-  .delete(controller.parentId, auth, owner, controller.delete);
+  .get(controller.parentId, isAuthenticated, controller.read)
+  .put(controller.parentId, isAuthenticated, owner, controller.update)
+  .delete(controller.parentId, isAuthenticated, owner, controller.delete);
 
-module.exports(router);
+module.exports = router;

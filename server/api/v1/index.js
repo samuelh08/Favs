@@ -9,4 +9,4 @@ router.use('/favs', favs);
 router.use('/users', users);
 router.use('/lists', lists);
 
-module.exports(router);
+module.exports = router;

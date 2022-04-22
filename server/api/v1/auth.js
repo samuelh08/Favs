@@ -9,7 +9,7 @@ const signToken = (payload, expiresIn = expires) =>
     expiresIn,
   });
 
-const auth = async (req, res, next) => {
+const isAuthenticated = async (req, res, next) => {
   let { headers: { authorization: token = '' } = {} } = req;
 
   if (token.startsWith('Bearer')) {
@@ -66,7 +66,7 @@ const me = (req, res, next) => {
 
 module.exports = {
   signToken,
-  auth,
+  isAuthenticated,
   owner,
   me,
 };
